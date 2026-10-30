@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(properties={"seckill.redis-enabled=true","seckill.warmup-enabled=false","spring.data.redis.port=16398",
+@SpringBootTest(properties={"seckill.redis-enabled=true","seckill.mq-enabled=false","seckill.warmup-enabled=false","spring.data.redis.port=16398",
     "spring.data.redis.connect-timeout=200ms","spring.data.redis.timeout=200ms","seckill.redis-prefix=lab2:test:outage:"})
 class RedisOutageTest {
     @Autowired ProductCache products;

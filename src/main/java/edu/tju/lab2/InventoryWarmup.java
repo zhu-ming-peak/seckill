@@ -13,13 +13,16 @@ public class InventoryWarmup {
     private final RedisStockGate gate;
     private final TransactionTemplate tx;
     private final boolean enabled;
+    private final boolean async;
+    private final AsyncInventoryReconciler repair;
     public InventoryWarmup(SeckillMapper mapper,RedisStockGate gate,PlatformTransactionManager manager,
-        @Value("${seckill.warmup-enabled:true}")boolean enabled){
-        this.mapper=mapper;this.gate=gate;this.tx=new TransactionTemplate(manager);this.enabled=enabled;
+        @Value("${seckill.warmup-enabled:true}")boolean enabled,@Value("${seckill.mq-enabled:false}")boolean async,AsyncInventoryReconciler repair){
+        this.mapper=mapper;this.gate=gate;this.tx=new TransactionTemplate(manager);this.enabled=enabled;this.async=async;this.repair=repair;
     }
     @EventListener(ApplicationReadyEvent.class)
     public void initialize(){
         if(!enabled||!gate.enabled)return;
+        if(async){repair.tick();return;}
         for(ActivityData data:mapper.activityDataList()) {
             if(!"ACTIVE".equals(data.status())||!data.endTime().isAfter(data.serverTime()))continue;
             tx.executeWithoutResult(status->{

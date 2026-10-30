@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(properties={"seckill.redis-enabled=true","seckill.warmup-enabled=false","seckill.redis-prefix=lab2:test:redis:","seckill.product-cache-ttl-seconds=2"})
+@SpringBootTest(properties={"seckill.redis-enabled=true","seckill.mq-enabled=false","seckill.warmup-enabled=false","seckill.redis-prefix=lab2:test:redis:","seckill.product-cache-ttl-seconds=2"})
 class RedisIntegrationTest extends DatabaseIntegrationTest {
     @Autowired StringRedisTemplate redis;
     @Autowired ProductCache products;

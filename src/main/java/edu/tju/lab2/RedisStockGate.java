@@ -32,6 +32,31 @@ public class RedisStockGate {
         return redis.execute(warm,List.of(key(a.id())),Integer.toString(a.stock()),
             Long.toString(Math.max(86400,Duration.between(a.serverTime(),a.endTime()).getSeconds()+86400)));
     }
+    public Long rebuild(Activity a,java.util.List<RequestRow> pending){
+        int available=a.stock()-pending.size();
+        if(available<0)throw new BusinessException("RECONCILE_REQUIRED","库存与已受理请求不一致，需核对",503);
+        var script=new DefaultRedisScript<Long>();
+        script.setLocation(new ClassPathResource("redis/rebuild.lua"));script.setResultType(Long.class);
+        var args=new java.util.ArrayList<String>();
+        args.add(Integer.toString(available));
+        args.add(Long.toString(Math.max(86400,Duration.between(a.serverTime(),a.endTime()).getSeconds()+86400)));
+        for(RequestRow row:pending){args.add(row.userId());args.add(row.token());}
+        return redis.execute(script,List.of(key(a.id())),args.toArray());
+    }
+    public void reserveAsyncInTransaction(Activity a,String user,String token){
+        if(!TransactionSynchronizationManager.isSynchronizationActive())throw new IllegalStateException("transaction required");
+        long result=reserveRaw(a,user,token);
+        if(result==1)throw new BusinessException("SOLD_OUT","本场秒杀资格已用完",409);
+        if(result==2)throw new BusinessException("RESERVATION_EXISTS","该用户已有受理请求",409);
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization(){
+            @Override public void afterCompletion(int status){
+                if(status==STATUS_ROLLED_BACK){
+                    try{finish(a.id(),user,token,false);}
+                    catch(Exception e){log.error("ASYNC_RESERVATION_REBUILD_REQUIRED activity={}",a.id());}
+                }
+            }
+        });
+    }
     public long reserveRaw(Activity a,String user,String token){
         long ttl=Math.max(86400,Duration.between(a.serverTime(),a.endTime()).getSeconds()+86400);
         Long r=redis.execute(reserve,List.of(key(a.id())),Integer.toString(a.stock()),user,token,Long.toString(ttl));

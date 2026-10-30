@@ -36,5 +36,6 @@ if __name__ == "__main__":
         PRIVATE.parent.mkdir(parents=True,exist_ok=True)
         PRIVATE.write_text(json.dumps({"DB_HOST":"127.0.0.1","DB_PORT":"3306","DB_NAME":"lab2_seckill","DB_USER":"lab2_app","DB_PASSWORD":password},indent=2),encoding="utf-8")
     execute((ROOT/"sql/02_seed.sql").read_text(encoding="utf-8"),admin)
+    execute((ROOT/"sql/06_async_requests.sql").read_text(encoding="utf-8"),admin)
     print("独立实验库、表结构、演示数据准备完成；应用凭据保存在项目外私用文件，未打印。")
 

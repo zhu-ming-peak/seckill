@@ -9,6 +9,7 @@ import sys
 import socket
 import time
 import hashlib
+import urllib.request
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -23,6 +24,11 @@ if __name__=="__main__":
     if args.env_file.exists(): env.update({k:str(v) for k,v in json.loads(args.env_file.read_text(encoding="utf-8")).items()})
     if args.action in ["test","run"] and not env.get("DB_PASSWORD"):
         sys.exit("缺少应用数据库配置。先初始化数据库，或通过 --env-file 指定项目外配置。")
+    if args.action=='test':
+        try:
+            with urllib.request.urlopen('http://127.0.0.1:'+env.get('APP_PORT','18092')+'/health',timeout=2) as response:live=json.load(response)
+        except (OSError,ValueError):live={}
+        if live.get('mode')=='ASYNC':sys.exit('请先停止本机异步演示应用，避免后台发消息任务处理测试用请求。')
     keep=None
     if os.name=="nt" and args.action in ["test","run"] and env.get("REDIS_HOST")=="127.0.0.1":
         def redis_port_open():
@@ -39,7 +45,7 @@ if __name__=="__main__":
                 keep.terminate()
                 sys.exit('本机 Redis 不可达，请检查 WSL 的 lab2-redis 服务。')
     if args.action=="run":
-        jar=ROOT/"target/seckill-lab2-0.2.0-cache.jar"
+        jar=ROOT/"target/seckill-lab2-0.3.0-async.jar"
         if not jar.exists():
             if keep is not None:keep.terminate()
             sys.exit("尚未打包，请先运行 build。")

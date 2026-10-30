@@ -13,6 +13,13 @@ public interface SeckillMapper {
     List<ActivityData> activityDataList();
     @Select("SELECT a.*,CURRENT_TIMESTAMP(6) AS server_time FROM seckill_activity a WHERE id=#{id}")
     ActivityData activityData(long id);
+    String ASYNC_ACTIVITY_SELECT="""
+        SELECT a.id,a.product_id,a.title,a.seckill_price,a.initial_stock,
+        GREATEST(a.stock-(SELECT COUNT(*) FROM seckill_request r WHERE r.activity_id=a.id AND r.state='ACCEPTED'),0) AS stock,
+        a.start_time,a.end_time,a.status,CURRENT_TIMESTAMP(6) AS server_time FROM seckill_activity a
+        """;
+    @Select(ASYNC_ACTIVITY_SELECT+" ORDER BY a.id") List<ActivityData> asyncActivities();
+    @Select(ASYNC_ACTIVITY_SELECT+" WHERE a.id=#{id}") ActivityData asyncActivity(long id);
     String ACTIVITY_SELECT = """
         SELECT a.id,a.product_id,a.title,p.name AS product_name,p.description,p.regular_price,
                a.seckill_price,a.initial_stock,a.stock,a.start_time,a.end_time,a.status,
@@ -36,6 +43,8 @@ public interface SeckillMapper {
         AND status='ACTIVE' AND start_time<=CURRENT_TIMESTAMP(6) AND end_time>CURRENT_TIMESTAMP(6)
         """)
     int decrement(long id);
+    @Update("UPDATE seckill_activity SET stock=stock-1 WHERE id=#{id} AND stock>0")
+    int decrementAccepted(long id);
     @Insert("""
         INSERT INTO seckill_order(id,request_id,activity_id,user_id,product_name,unit_price,quantity,status)
         VALUES(#{id},#{requestId},#{activityId},#{userId},#{productName},#{unitPrice},1,'SUCCESS')

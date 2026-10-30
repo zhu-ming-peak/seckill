@@ -33,4 +33,9 @@ logging:
 seckill:
   redis-enabled: ${REDIS_ENABLED:true}
   product-cache-ttl-seconds: ${PRODUCT_CACHE_TTL_SECONDS:60}
-  redis-prefix: ${REDIS_PREFIX:lab2:v2:}
+  redis-prefix: ${REDIS_PREFIX:lab2:v3:}
+  mq-enabled: ${MQ_ENABLED:true}
+  mq-namesrv: ${ROCKETMQ_NAMESRV_ADDR:127.0.0.1:9876}
+  mq-topic: ${ROCKETMQ_TOPIC:Lab2OrdersV3}
+  mq-consumer-group: ${ROCKETMQ_CONSUMER_GROUP:lab2-orders-v3}
+  mq-consumer-enabled: ${MQ_CONSUMER_ENABLED:true}
