@@ -13,6 +13,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 
 @RestControllerAdvice
 public class ApiErrors {
+    @ExceptionHandler({org.springframework.data.redis.RedisConnectionFailureException.class,
+        org.springframework.data.redis.RedisSystemException.class,
+        org.springframework.dao.QueryTimeoutException.class})
+    ResponseEntity<?> redisUnavailable(Exception e) {return response(503,"CACHE_UNAVAILABLE","库存服务暂时不可用，请保留原请求编号重试");}
     @ExceptionHandler(BusinessException.class)
     ResponseEntity<?> business(BusinessException e) { return response(e.status,e.code,e.getMessage()); }
     @ExceptionHandler(DuplicateKeyException.class)

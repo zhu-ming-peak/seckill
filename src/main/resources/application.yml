@@ -2,6 +2,13 @@ server:
   address: ${APP_ADDRESS:127.0.0.1}
   port: ${APP_PORT:18092}
 spring:
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2s
+      connect-timeout: 2s
   application:
     name: seckill-lab2
   datasource:
@@ -23,3 +30,7 @@ mybatis:
 logging:
   level:
     edu.tju.lab2: INFO
+seckill:
+  redis-enabled: ${REDIS_ENABLED:true}
+  product-cache-ttl-seconds: ${PRODUCT_CACHE_TTL_SECONDS:60}
+  redis-prefix: ${REDIS_PREFIX:lab2:v2:}

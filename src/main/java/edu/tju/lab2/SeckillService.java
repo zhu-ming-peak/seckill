@@ -8,10 +8,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class SeckillService {
     private final SeckillMapper mapper;
-    public SeckillService(SeckillMapper mapper) { this.mapper=mapper; }
-    public List<Activity> activities() { return mapper.activities(); }
+    private final ProductCache products;
+    private final RedisStockGate stockGate;
+    public SeckillService(SeckillMapper mapper,ProductCache products,RedisStockGate stockGate) {
+        this.mapper=mapper;this.products=products;this.stockGate=stockGate;
+    }
+    public List<Activity> activities() {
+        return mapper.activityDataList().stream().map(a->a.withProduct(products.get(a.productId()))).toList();
+    }
     public Activity activity(long id) {
-        Activity a=mapper.activity(id);
+        ActivityData row=mapper.activityData(id);
+        Activity a=row==null?null:row.withProduct(products.get(row.productId()));
         if (a==null) throw new BusinessException("NOT_FOUND","活动不存在",404);
         return a;
     }
@@ -40,6 +47,7 @@ public class SeckillService {
             case "SOLD_OUT" -> throw new BusinessException("SOLD_OUT","商品已售罄",409);
             default -> { }
         }
+        stockGate.reserveInTransaction(a,userId,UUID.randomUUID().toString());
         // SQL 再次检查数据库时间与库存，防止锁等待或执行期间活动过期。
         if (mapper.decrement(activityId)!=1)
             throw new BusinessException("UNAVAILABLE","库存或活动状态已变化，请刷新后重试",409);

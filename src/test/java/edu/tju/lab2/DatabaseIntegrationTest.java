@@ -10,7 +10,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(properties="seckill.redis-enabled=false")
 class DatabaseIntegrationTest {
     @Autowired SeckillService service;
     @Autowired SeckillMapper mapper;

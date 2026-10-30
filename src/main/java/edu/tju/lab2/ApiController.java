@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,7 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class ApiController {
     private final SeckillService service;
     private final JdbcTemplate jdbc;
-    public ApiController(SeckillService service,JdbcTemplate jdbc) { this.service=service; this.jdbc=jdbc; }
+    private final ProductCache products;
+    private final RedisStockGate stockGate;
+    public ApiController(SeckillService service,JdbcTemplate jdbc,ProductCache products,RedisStockGate stockGate) {
+        this.service=service;this.jdbc=jdbc;this.products=products;this.stockGate=stockGate;
+    }
     public record Purchase(
         @Pattern(regexp="[A-Za-z0-9_-]{1,64}",message="用户编号只允许 1–64 位字母、数字、下划线或短横线")
         @jakarta.validation.constraints.NotNull String userId,
@@ -22,7 +27,12 @@ public class ApiController {
     @GetMapping("/health")
     Map<String,String> health() {
         jdbc.queryForObject("SELECT 1",Integer.class);
-        return Map.of("status","UP","database","UP","version","0.1.0-db","mode","MYSQL");
+        return Map.of("status","UP","database","UP","redis",stockGate.ping(),"version","0.2.0-cache","mode",stockGate.enabled?"MYSQL_REDIS":"MYSQL");
+    }
+    @GetMapping("/api/products/{id}")
+    ResponseEntity<Product> product(@PathVariable long id) {
+        ProductCache.Lookup result=products.lookup(id);
+        return ResponseEntity.ok().header("X-Product-Cache",result.source()).body(result.product());
     }
     @GetMapping("/api/activities") List<Activity> activities() { return service.activities(); }
     @GetMapping("/api/activities/{id}") Activity activity(@PathVariable long id) { return service.activity(id); }

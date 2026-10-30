@@ -5,6 +5,14 @@ import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface SeckillMapper {
+    @Select("SELECT id,name,description,regular_price FROM product WHERE id=#{id}")
+    Product product(long id);
+    @Update("UPDATE product SET name=#{name},description=#{description},regular_price=#{regularPrice} WHERE id=#{id}")
+    int updateProduct(Product product);
+    @Select("SELECT a.*,CURRENT_TIMESTAMP(6) AS server_time FROM seckill_activity a ORDER BY id")
+    List<ActivityData> activityDataList();
+    @Select("SELECT a.*,CURRENT_TIMESTAMP(6) AS server_time FROM seckill_activity a WHERE id=#{id}")
+    ActivityData activityData(long id);
     String ACTIVITY_SELECT = """
         SELECT a.id,a.product_id,a.title,p.name AS product_name,p.description,p.regular_price,
                a.seckill_price,a.initial_stock,a.stock,a.start_time,a.end_time,a.status,
