@@ -2,17 +2,22 @@
 
 《架构驱动的软件开发实践》实验二的小项目，以同一秒杀案例逐步实践 MySQL、Redis、RocketMQ。当前版本 `0.3.0-async`，本机数据库版、缓存版与异步版已完成。阶段 E 的本机功能和性能对比、阶段 F 的 ECS 部署与功能验证已完成；RDS 入门实践待资源。
 
+仓库：[zhu-ming-peak/seckill](https://github.com/zhu-ming-peak/seckill)。报告对应版本与材料索引见[项目交付说明](docs/项目交付说明.md)。
+
 本机页面：<http://127.0.0.1:18092/>。用户编号是实验身份标识，未实现登录认证、真实支付或物流。
 
 云端页面：建立 SSH 本地转发后访问 <http://127.0.0.1:18094/>，与本机数据库分开运行。实际部署、资源限制、重启验证与演示步骤见 [ECS 部署说明](deploy/ecs/README.md)。云端未开放新的公网 HTTP 端口；本地标签 `stage-f-deployed` 对应本阶段材料。
 
 ## 版本与结构
 
-| 本地标签 | 实现 |
+| 版本标签 | 实现 |
 | --- | --- |
 | v0.1.0-db | MySQL 事务、库存条件更新与唯一约束 |
 | v0.2.0-cache | 商品旁路缓存、Lua 原子预扣与回滚补偿 |
 | v0.3.0-async | 持久请求/Outbox、异步落单、结果查询、幂等与恢复 |
+| stage-e-validated | 三版本本机性能对比与图表 |
+| stage-f-deployed | ECS 部署与恢复验证材料 |
+| stage-g-delivered | GitHub 项目交付对应版本 |
 
 ```mermaid
 flowchart LR
@@ -39,6 +44,14 @@ HTTP 202 代表持久请求已受理，消息可能尚未发送；只有 SUCCESS
 ## 准备与启动
 
 需 Java 17、Maven、Python 3、本机 MySQL 和默认 Ubuntu WSL。WSL 安装器针对本次实验环境，需要发行版管理员权限与下载网络，不是通用服务器安装器。
+
+```powershell
+git clone https://github.com/zhu-ming-peak/seckill.git
+cd seckill
+git checkout stage-g-delivered
+```
+
+首次使用先确认 Java 17 和 Maven 可用；工具没有加入 PATH 时，设置 JAVA_HOME、MAVEN_BIN、MYSQL_BIN 为自己的安装路径，再执行下列准备步骤。不要沿用他人的私用密码文件。
 
 ```powershell
 python scripts/init_db.py
@@ -95,4 +108,4 @@ python scripts/inventory_snapshot.py --output ../实验记录/异步库存快照
 
 默认开启异步与 Redis。不同版本不得同时修改同一批活动。正常演示无需重置；sql/05_reset_demo.sql 会删除活动 1–5 的订单与请求，须停流、保存结果并核对未完成请求后人工执行，再仅删除对应 v3 活动库存键并重启。禁止 FLUSHDB，不自动清空 Broker。
 
-采用持久 Outbox、至少一次投递与数据库幂等；未实现跨存储原子提交或端到端“恰好一次”。单机、单 Broker 不提供高可用；数据库丢失、永久错误和长期故障仍需人工处理。真实配置、密码、服务器私用材料及原始证据不进入 Git；尚未推送 GitHub。
+采用持久 Outbox、至少一次投递与数据库幂等；未实现跨存储原子提交或端到端“恰好一次”。单机、单 Broker 不提供高可用；数据库丢失、永久错误和长期故障仍需人工处理。真实配置、密码、服务器私用材料及原始证据不进入 Git。
