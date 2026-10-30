@@ -1,0 +1,94 @@
+{
+  "run_id": "97ea089c5a",
+  "driver_sha256": "a97cf698eba379061649221244812bffbda8b814fe2c105243a47a189969f344",
+  "mysql_probe": "unique LISTEN PID on configured MySQL port; PID stored in each sample",
+  "created_at": "2026-10-30T23:27:11.136474+08:00",
+  "completed_at": "2026-10-30T23:34:27.885406+08:00",
+  "artifacts": [
+    {
+      "tag": "v0.1.0-db",
+      "commit": "b7463d569cdfe56bd9116bc231d70ecc4d5be237",
+      "jar_sha256": "361c9d77decaf153aa6b188d59558fe74be92cab3e7b49cf8690823423a8d114",
+      "tests": {
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "tag": "v0.2.0-cache",
+      "commit": "b73bd053a1495e5eaf7bdf5b3b01378472e1f058",
+      "jar_sha256": "ea57f9dfb0ae7ae9eb08a44cc5918df36101debaca8fed4157160ace1efa8698",
+      "tests": {
+        "tests": 25,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "tag": "v0.3.0-async",
+      "commit": "e199b42cb71753b95f089bba19b124a08b927847",
+      "jar_sha256": "fc1643750937476cb0e4b6e2245f20dbf062ae2e692239c733f38d465c1ada09",
+      "tests": {
+        "tests": 38,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    }
+  ],
+  "http_requests": 204678,
+  "error_count": 0,
+  "formal_bursts": 27,
+  "formal_orders": 3456,
+  "functional_versions": 3,
+  "trajectory_round": "0.3.0-async-r2-write-c16",
+  "system": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+    "logical_cpus": 16,
+    "physical_cpus": 8,
+    "total_memory_mib": 16183.0859375,
+    "cpu_frequency": {
+      "current": 2304.0,
+      "min": 0.0,
+      "max": 2304.0
+    }
+  },
+  "environment": {
+    "verified_at_unix": 1793374535.666514,
+    "verification": "read-only after measurement; components not reconfigured between rounds",
+    "mysql": {
+      "version": "8.0.46",
+      "isolation_level": "REPEATABLE-READ",
+      "innodb_buffer_pool_bytes": 134217728,
+      "max_connections": 151
+    },
+    "redis": {
+      "redis_version": "7.4.8",
+      "arch_bits": "64",
+      "os": "Linux 6.6.87.2-microsoft-standard-WSL2 x86_64"
+    },
+    "rocketmq": {
+      "version": "5.5.1",
+      "evidence": "MQAdmin clusterList broker response"
+    },
+    "java": "openjdk version \"17.0.20.1\" 2026-08-18\nOpenJDK Runtime Environment Temurin-17.0.20.1+1 (build 17.0.20.1+1)\nOpenJDK 64-Bit Server VM Temurin-17.0.20.1+1 (build 17.0.20.1+1, mixed mode, sharing)",
+    "python_packages": {
+      "PyMySQL": "1.2.3",
+      "psutil": "7.2.2",
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.4"
+    },
+    "wsl": {
+      "kernel": "6.6.87.2-microsoft-standard-WSL2",
+      "logical_cpus": 16,
+      "memory": {
+        "MemTotal": "8026296 kB",
+        "MemAvailable": "6104840 kB"
+      }
+    }
+  }
+}
