@@ -1,0 +1,25 @@
+server:
+  address: ${APP_ADDRESS:127.0.0.1}
+  port: ${APP_PORT:18092}
+spring:
+  application:
+    name: seckill-lab2
+  datasource:
+    url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:lab2_seckill}?connectionTimeZone=%2B08:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8
+    username: ${DB_USER:lab2_app}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 12
+      minimum-idle: 2
+      connection-timeout: 10000
+  sql:
+    init:
+      mode: never
+  jackson:
+    time-zone: Asia/Shanghai
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    edu.tju.lab2: INFO

@@ -1,0 +1,16 @@
+target/
+.idea/
+*.iml
+.env
+.env.*
+!.env.example
+application-local.yml
+application-private.yml
+*.log
+*.pid
+__pycache__/
+*.pyc
+data/
+private/
+results/raw/
+
