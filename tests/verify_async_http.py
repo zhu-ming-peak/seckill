@@ -1,9 +1,10 @@
 """真实异步接口验证。暂停点需要消费者已停止；恢复后继续核对同一请求。"""
 from pathlib import Path
-import argparse,datetime,json,time,urllib.request,urllib.error,uuid
+import argparse,datetime,json,re,time,urllib.request,urllib.error,uuid
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--base',default='http://127.0.0.1:18092');p.add_argument('--output',type=Path,required=True);p.add_argument('--pause-at-accepted',action='store_true');p.add_argument('--resume-from',type=Path);a=p.parse_args()
-    record=json.loads(a.resume_from.read_text(encoding='utf-8')) if a.resume_from else {'user':'stageD_'+uuid.uuid4().hex[:12],'requestId':str(uuid.uuid4()),'results':[]}
+    p=argparse.ArgumentParser();p.add_argument('--base',default='http://127.0.0.1:18092');p.add_argument('--output',type=Path,required=True);p.add_argument('--pause-at-accepted',action='store_true');p.add_argument('--resume-from',type=Path);p.add_argument('--user-prefix',default='verify_');a=p.parse_args()
+    if not re.fullmatch(r'[A-Za-z0-9_-]{1,32}',a.user_prefix):p.error('用户前缀格式不正确')
+    record=json.loads(a.resume_from.read_text(encoding='utf-8')) if a.resume_from else {'user':a.user_prefix+uuid.uuid4().hex[:12],'requestId':str(uuid.uuid4()),'results':[]}
     user=record['user'];rid=record['requestId'];rows=record['results']
     def request(path,status,body=None,code=None):
         req=urllib.request.Request(a.base+path,data=json.dumps(body).encode() if body is not None else None,headers={'Content-Type':'application/json'})

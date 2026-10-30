@@ -1,6 +1,6 @@
 # 部署材料
 
-阶段 F 将在此添加经实际验证的启动、停止、重启和 ECS 部署说明。拟用独立目录 `/home/zmf/lab2-seckill`，该远端目录当前尚未创建。
+本机安装说明见项目 README 与 redis/、rocketmq/ 目录。[ECS 部署与演示说明](ecs/README.md) 已于 2026-10-31 完成实际验证，包括页面下单、消费者暂停恢复及组件重启。
 
-lab2 应用拟使用 Java 17 显式路径，不替换 ECS 默认 Java 8，不覆盖 lab1 的 EDAS 应用。
+ECS 实际目录为 `/opt/lab2-seckill`，替代阶段 A 候选目录。应用使用 Java 17 显式路径，默认 Java 8 和 EDAS 平台保留。地址、登录凭据、组件密码和原始日志在仓库外保存。
 

@@ -1,0 +1,19 @@
+{
+  "java_release": "jdk-17.0.21+9",
+  "java_archive": "OpenJDK17U-jre_x64_linux_hotspot_17.0.21_9.tar.gz",
+  "mq_archive": "rocketmq-all-5.5.1-bin-release.zip",
+  "downloads": [
+    {
+      "name": "OpenJDK17U-jre_x64_linux_hotspot_17.0.21_9.tar.gz",
+      "url": "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.21%2B9/OpenJDK17U-jre_x64_linux_hotspot_17.0.21_9.tar.gz",
+      "algorithm": "sha256",
+      "checksum": "9f41bf88c7900c7097444a1bdeb84146ae692bc08842490ab098063c74bf9a8a"
+    },
+    {
+      "name": "rocketmq-all-5.5.1-bin-release.zip",
+      "url": "https://dist.apache.org/repos/dist/release/rocketmq/5.5.1/rocketmq-all-5.5.1-bin-release.zip",
+      "algorithm": "sha512",
+      "checksum": "21555d9bd79792ac89f246566f19f58e300784c59b96289fd0c74db14787861081fb60ebb95cf541bf20a3e508bf3b70feb9596ea3ba6dc5dc88fa6081f00577"
+    }
+  ]
+}
